@@ -1,3 +1,4 @@
+#THIS IS WHAT I GOT SO FAR
 import gym
 import numpy as np
 
