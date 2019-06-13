@@ -23,10 +23,10 @@ def moveplayer(act):
         if hracY > res[1]-60:
             hracY = res[1]-60
 makingQtableDir = True
-RUN = 3
+RUN = 1
 while makingQtableDir:
     try:
-        os.makedirs(f"qtables/pong/run{RUN}")
+        os.makedirs(f"qtables/pong2.0/run{RUN}")
         makingQtableDir = False
     except:
         RUN += 1
@@ -44,7 +44,7 @@ DISCOUNT = 0.95
 epsilonReIn = 500
 stepsPerEpisode = 2000
 
-with open(f"qtables/pong/run{RUN}/opts.txt", "w") as f:
+with open(f"qtables/pong2.0/run{RUN}/opts.txt", "w") as f:
     f.write(f"EPISODES = {EPISODES}\nENEMY_POINT_PENALTY = {ENEMY_POINT_PENALTY}\nPOINT_REWARD = {POINT_REWARD}\nDOWN_SIZE = {DOWN_SIZE}\nSTART_EPSILON = {START_EPSILON}\nEPS_DECAY = {EPS_DECAY}\nSHOW_EVERY = {SHOW_EVERY}\nstart_q_table = {start_q_table}\nLEARNING_RATE = {LEARNING_RATE}\nDISCOUNT = {DISCOUNT}\nepsilonReIn = {epsilonReIn}\nstepsPerEpisode = {stepsPerEpisode}")
 
 CERNA = (0,0,0)
@@ -66,7 +66,7 @@ epsilon = START_EPSILON
 
 q_table = {}
 if start_q_table is None:
-    for y in range(-res[0],res[0]):
+    for y in range(-res[0],res[0]+1):
         q_table[(y)] = [np.random.uniform(-5,0) for i in range(3)]
     q_table[(-12345)] = [np.random.uniform(-5,0) for i in range(3)]
 else:
@@ -100,7 +100,7 @@ for episode in range(EPISODES):
         reward = 0
         ballYonX = ((micX-20)*micSmerY)/micSmerX + micSmerY
         #print(ballYonX)
-        while ballYonX < 0 and ballYonX > res[0]:
+        while ballYonX < 0 or ballYonX > res[0]:
             if ballYonX < 0:
                 ballYonX = -ballYonX
             if ballYonX > res[0]:
@@ -147,6 +147,11 @@ for episode in range(EPISODES):
             if pocY+25<micY:
                 pocY+=5
 
+        if hracY < 0:
+            hracY = 0
+        if hracY > res[1]-60:
+            hracY = res[1]-60
+
         #ODRAZI HRAC MICEK?
         if micX>=20 and micX<=30 and micY>=hracY-10 and micY<=hracY+60:
             micSmerX*=-1
@@ -169,7 +174,7 @@ for episode in range(EPISODES):
             micSmerY = 10
 
         ballYonX = ((micX-20)*micSmerY)/micSmerX + micY
-        while ballYonX < 0 and ballYonX > res[0]:
+        while ballYonX < 0 or ballYonX > res[0]:
             if ballYonX < 0:
                 ballYonX = -ballYonX
             if ballYonX > res[0]:
@@ -184,7 +189,7 @@ for episode in range(EPISODES):
             reward += -10
         if abs(ballYonX-hracY) == 0:
             reward += 20
-        print(new_obs, ballYonX, hracY)
+        #print(new_obs, ballYonX, hracY)
         max_future_q = np.max(q_table[new_obs])
         current_q = q_table[obs][action]
 
@@ -219,13 +224,13 @@ for episode in range(EPISODES):
         epsilon = START_EPSILON
         tillEpsilon = 0
     if episode % SHOW_EVERY == 0:
-        with open(f"qtables/pong/run{RUN}/q_table-{episode}-{int(time.time())}.pickle", "wb") as f:
+        with open(f"qtables/pong2.0/run{RUN}/q_table-{episode}-{int(time.time())}.pickle", "wb") as f:
             pickle.dump(q_table, f)
     if episode % 100 == 0:
         print(f"EP Reward on episode {episode}:{episode_reward}, Epsilon: {epsilon}, Past {SHOW_EVERY} episodes avg: {sum(episode_rewards[-SHOW_EVERY:])/SHOW_EVERY}")
     episode_rewards.append(episode_reward)
 pg.quit()
-with open(f"qtables/pong/run{RUN}/q_table-final-{int(time.time())}.pickle", "wb") as f:
+with open(f"qtables/pong2.0/run{RUN}/q_table-final-{int(time.time())}.pickle", "wb") as f:
     pickle.dump(q_table, f)
 
 plt.plot([i for i in range(len(episode_rewards))], episode_rewards)
