@@ -43,10 +43,11 @@ LEARNING_RATE = 0.1
 DISCOUNT = 0.95
 epsilonReIn = 500
 stepsPerEpisode = 2000
-EPS_DECAY = EPS_DECAY**(1/stepsPerEpisode)
 
 with open(f"qtables/pong/run{RUN}/opts.txt", "w") as f:
     f.write(f"EPISODES = {EPISODES}\nENEMY_POINT_PENALTY = {ENEMY_POINT_PENALTY}\nPOINT_REWARD = {POINT_REWARD}\nDOWN_SIZE = {DOWN_SIZE}\nSTART_EPSILON = {START_EPSILON}\nEPS_DECAY = {EPS_DECAY}\nSHOW_EVERY = {SHOW_EVERY}\nstart_q_table = {start_q_table}\nLEARNING_RATE = {LEARNING_RATE}\nDISCOUNT = {DISCOUNT}\nepsilonReIn = {epsilonReIn}\nstepsPerEpisode = {stepsPerEpisode}")
+
+EPS_DECAY = EPS_DECAY**(1/stepsPerEpisode)
 
 CERNA = (0,0,0)
 BILA = (250,250,250)
